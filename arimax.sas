@@ -1,9 +1,3 @@
-proc glmselect data=monthly_vals;
-	model pm2= no2 no2l1 no2l2 no2l3 co col1 col2 col3 so2 so2l1 so2l2 so2l3 awnd awndl1 awndl2 awndl3 prcp prcpl1
-	prcpl2 prcpl3 snow snowl1 snowl2 snowl3 snwd snwdl1 snwdl2 snwdl3 tavg tavgl1 tavgl2 tavgl3 tmax tmaxl1 tmaxl2
-	tmaxl3 tmin tminl1 tminl2 tminl3 wsf2 wsf2l1 wsf2l2 wsf2l3 wsf5 wsf5l1 wsf5l2 wsf5l3 wt01 wt01l1 wt01l2 wt01l3
-	/ selection=stepwise slstay=0.05;
-run;
 
 data monthly_vals monthly_vals_train monthly_vals_valid;
 	set ts5.monthly_vals;
@@ -73,6 +67,14 @@ data monthly_vals monthly_vals_train monthly_vals_valid;
 	if t =< 54 then output monthly_vals_train;
 	if t > 54 then output monthly_vals_valid;
 	output monthly_vals;
+run;
+
+
+proc glmselect data=monthly_vals;
+	model pm2= no2 no2l1 no2l2 no2l3 co col1 col2 col3 so2 so2l1 so2l2 so2l3 awnd awndl1 awndl2 awndl3 prcp prcpl1
+	prcpl2 prcpl3 snow snowl1 snowl2 snowl3 snwd snwdl1 snwdl2 snwdl3 tavg tavgl1 tavgl2 tavgl3 tmax tmaxl1 tmaxl2
+	tmaxl3 tmin tminl1 tminl2 tminl3 wsf2 wsf2l1 wsf2l2 wsf2l3 wsf5 wsf5l1 wsf5l2 wsf5l3 wt01 wt01l1 wt01l2 wt01l3
+	/ selection=stepwise slstay=0.05;
 run;
 
 data monthly_vals_arima;
