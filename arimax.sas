@@ -92,11 +92,19 @@ quit;
 data mapes;
 	merge pm2f monthly_vals;
 	ape=abs((pm2-forecast)/pm2);
+	ae = abs(forecast-pm2);
 run;
 
 proc means data=mapes mean;
-	var ape;
+	var ape ae;
 run;
+
+proc arima data=monthly_vals;
+	identify var=pm2 crosscor=(co so2l1 snow tmin);
+	estimate input=(co so2l1 snow tmin) p=1;
+	forecast lead=6 out=arimaxf;
+run;
+quit;
 
 proc arima data=monthly_vals;
 	identify var=tmin stationarity=(adf=3);
@@ -132,15 +140,15 @@ quit;
 data monthly_vals_fcst;
 	set monthly_vals;
 	set co (keep=forecast);
-	set so2 (rename=(forecast=so2f) keep=forecast);
+	set so2 (rename=(forecast=so2l1f) keep=forecast);
 	if t > 60 then co=forecast;
-	if t > 60 then so2=so2f;
+	if t > 60 then so2l1=so2l1f;
 run;
 
 
 proc arima data=monthly_vals_fcst;
-	identify var=pm2 crosscor=(co so2 tmin);
-	estimate input=(co sol12 snow tmin) q=1;
+	identify var=pm2 crosscor=(co so2l1 snow tmin);
+	estimate input=(co so2l1 snow tmin) p=1;
 	forecast lead=6 out=forecast;
 run;
 quit;
