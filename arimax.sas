@@ -95,9 +95,10 @@ data mapes;
 	ae = abs(forecast-pm2);
 run;
 
-proc means data=mapes mean;
+proc means data=mapes(firstobs=55) mean;
 	var ape ae;
 run;
+
 
 proc arima data=monthly_vals;
 	identify var=pm2 crosscor=(co so2l1 snow tmin);
@@ -149,12 +150,12 @@ run;
 proc arima data=monthly_vals_fcst;
 	identify var=pm2 crosscor=(co so2l1 snow tmin);
 	estimate input=(co so2l1 snow tmin) p=1;
-	forecast lead=6 out=forecast;
+	forecast lead=6 out=ts5.forecast;
 run;
 quit;
 
+proc export data=ts5.forecast outfile="C:\Users\bjsul\Documents\NCSU\MSA\Fall\Time-Series\arimaxforecast.csv" dbms=csv;
+run;
 
-
-proc arima data=monthly_vals;
 
 quit;
